@@ -13,13 +13,20 @@ class RaceCar
     {
         if(!isEngineStarted)
         {
-            if(fuelLevel > 0 && engineTemp <100)
+            if(fuelLevel > 0 && !isEngineOverheated())
             {
                  isEngineStarted = true
             }
         }
         else{isEngineStarted = false}
     }
+
+    fun isTiresBurst(): Boolean = tireWear ==0
+
+    fun isEngineOverheated(): Boolean = engineTemp >=100
+
+    fun isAnAccident(): Boolean= isEngineOverheated()  || isTiresBurst()
+
 
     fun toPitStop(){
         if(carSpeed <20){
@@ -45,17 +52,32 @@ class RaceCar
     }
 
     fun accelerate(){
-        if(isEngineStarted && fuelLevel > 0 && !isOnPitStop  && carSpeed <250) {
+        if(isEngineStarted && fuelLevel > 0 && !isOnPitStop  && carSpeed <250 && !isAnAccident()) {
             carSpeed = (carSpeed +10).coerceAtMost(250)
             fuelLevel = (fuelLevel -5).coerceAtLeast(0)
             tireWear = (tireWear- 5).coerceAtLeast(0)
             engineTemp +=15
+            if(isAnAccident()){
+                isEngineStarted = false
+              carSpeed = 0
+            }
         }
+
     }
     fun brake(){
         if(!isOnPitStop && carSpeed > 0){
             carSpeed =carSpeed - 5
             engineTemp = (engineTemp- 3).coerceAtLeast(0)
         }
+    }
+
+    fun resetCar(){
+        fuelLevel = 100
+         tireWear = 100
+         isEngineStarted = false
+        engineTemp  = 20
+         carSpeed  = 0
+         isOnPitStop= false
+
     }
 }
