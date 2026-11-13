@@ -1,13 +1,18 @@
 package com.example.nascarsim
 
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
 class RaceCar
 {
-    var fuelLevel : Int = 100
-    var tireWear : Int = 100
-    var isEngineStarted : Boolean = false
-    var engineTemp : Int = 20
-    var carSpeed : Int  = 0
-    var isOnPitStop : Boolean = false
+    var fuelLevel by mutableIntStateOf(100)
+    var tireWear by mutableIntStateOf(100)
+    var isEngineStarted by mutableStateOf(false)
+    var engineTemp by mutableIntStateOf(20)
+    var carSpeed by mutableIntStateOf(0)
+    var isOnPitStop by mutableStateOf(false)
 
     fun startStopEngine()
     {
@@ -32,6 +37,8 @@ class RaceCar
         if(carSpeed <20){
             isOnPitStop= true
             carSpeed =0
+            pitStop()
+            leavePitStop()
         }
     }
 
@@ -55,7 +62,7 @@ class RaceCar
         if(isEngineStarted && fuelLevel > 0 && !isOnPitStop  && carSpeed <250 && !isAnAccident()) {
             carSpeed = (carSpeed +10).coerceAtMost(250)
             fuelLevel = (fuelLevel -5).coerceAtLeast(0)
-            tireWear = (tireWear- 5).coerceAtLeast(0)
+            tireWear = (tireWear- 3).coerceAtLeast(0)
             engineTemp +=15
             if(isAnAccident()){
                 isEngineStarted = false
@@ -66,8 +73,9 @@ class RaceCar
     }
     fun brake(){
         if(!isOnPitStop && carSpeed > 0){
-            carSpeed =carSpeed - 5
+            carSpeed =(carSpeed - 5).coerceAtLeast(0)
             engineTemp = (engineTemp- 3).coerceAtLeast(0)
+            tireWear -= 1
         }
     }
 
